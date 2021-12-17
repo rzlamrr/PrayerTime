@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="in">
+
+<head>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
+
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png')}}" />
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico')}}" />
+  <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest')}}" />
+
+  <meta charset="utf-8" />
+  <!--    keywords-->
+  <meta name="keywords" content="jadwal shalat, prayer times, kemenag" />
+  <!--    description-->
+  <meta name="description" content="Jadwal Shalat for Indonesian, scrapped from Kemenag RI" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+    body {
+      display: flex;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+
+    main {
+      flex: 1 0 auto;
+    }
+
+    a {
+      color: #ffca28;
+    }
+
+    span {
+      color: #368039 !important;
+    }
+
+    input {
+      color: black;
+    }
+
+    .footer-fixed footer {
+	    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+    .footer-fixed {
+	    position: fixed;
+	    bottom: 0;
+	    width: 100%;
+    }
+
+    body.dark {
+      background-color: #121212;
+      color: whitesmoke;
+    }
+    body.dark .card {
+      background-color: #202123;
+    }
+    body.dark .rowshalat {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    body.dark .rowshalat .jadwalshalat {
+      background-color: #202123;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    body.dark input {
+      color: whitesmoke;
+      background-color: #364237;
+    }
+    body.dark span {
+      color: #3d8c40 !important;
+      background-color: #202123;
+    }
+</style>
+
+  <title>JadwalShalat</title>
+</head>
+
+<body>
+  <main>
+    <div class="col s12 m12 l7 offset-l1">
+      <ul class="collapsible popout">
+        <li class="active">
+          <div id="search_collaps" class="collapsible-header card-panel green darken-1 center-align valign center-block">
+            <i class="material-icons">access_time</i>JADWAL SHALAT
+          </div>
+          <div class="collapsible-body">
+            <div class="container">
+              <div class="section">
+                <div class="row">
+                  <form class="col s12">
+                    <div class="row">
+                      <div class="input-field col s12 m6 l6">
+                        <select id="province">
+                          {% for o in province %}
+                          <option value="{{ o }}">{{ o }}</option>
+                          {% endfor %}
+                        </select>
+                        <label>PROVINSI</label>
+                      </div>
+                      <div class="input-field col s12 m6 l6">
+                        <select id="kabko">
+                          {% for o in kabko %}
+                          <option value="{{ o }}">{{ o }}</option>
+                          {% endfor %}
+                        </select>
+                        <label>KABUPATEN/KOTA</label>
+                      </div>
+                      <div class="input-field col s12 m6 l6">
+                        <select id="search_bln" class="form-input" name="search_bln">
+                          {% for o in bulan %}
+                          <option value="{{ o }}">{{ o }}</option>
+                          {% endfor %}
+                          </select>
+                        </select>
+                        <label>BULAN</label>
+                      </div>
+                      <div class="input-field col s12 m6 l6">
+                        <select id="search_thn" class="form-input" name="search_thn">
+                          {% for o in tahun %}
+                          <option value="{{ o }}">{{ o }}</option>
+                          {% endfor %}
+                        </select>
+                        <label>TAHUN</label>
+                      </div>
+                    </div>
+                    <div class="center-align">
+                      <a id="btn_search" class="btn-floating waves-effect waves-light pulse green darken-1"><i
+                          class="material-icons">search</i></a>
+                          <a class="btn-floating dark-toggle waves-effect waves-light green darken-1" href="#"
+                            onclick="localStorage.setItem('mode', (localStorage.getItem('mode')) === 'dark' ? 'light' : 'dark');
+                                  localStorage.getItem('mode') === 'dark' ? document.querySelector('body').classList.add('dark') : document.querySelector('body').classList.remove('dark')"
+                            title="Dark/light"><i class="material-icons">dark_mode</i></a>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="progress" style="display: none">
+            <div class="indeterminate"></div>
+          </div>
+        </li>
+      </ul>
+        <div id="rowshalat" class="row"></div>
+    </div>
+  </main>
+  <footer class="footer-fixed green darken-1">
+    <p class="center-align">
+      Made by
+      <a href="https://github.com/rzlamrr" target="_blank">RizaL</a> with
+      Python.
+    </p>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    $(document).ready(function () {
+      $(".collapsible").collapsible();
+      $("select").formSelect();
+      $("#province").change(function () {
+        $.getJSON("/_update_dropdown", {
+          selprov: $("#province").val()
+        }).success(function (data) {
+          $("#kabko").html(data.html_string_selected);
+          $("select").formSelect();
+        });
+      });
+      $("#btn_search").bind("click", function () {
+        if ($("#kabko").val() == "Pilih Kabupaten") {
+          alert("Silahkan pilih provinsi terlebih dahulu");
+          return false;
+        }
+        $('.progress').show();
+        $(".collapsible").collapsible("close", 0);
+        $.get(
+          "/_process_data/" +
+          $("#province").val() +
+          "/" + $("#kabko").val() +
+          "/" + $("#search_thn").val() +
+          "/" + $("#search_bln").val()
+        ).success(function (shalat) {
+          $("#rowshalat").html("");
+          if (shalat != 'null') {
+            $("#rowshalat").append(
+              shalat
+            );
+            $('.progress').hide();
+          }
+        });
+      });
+      $('.dark-toggle').on('click', function () {
+        if ($(this).find('i').text() == 'dark_mode') {
+          $(this).find('i').text('light_mode');
+        } else {
+          $(this).find('i').text('dark_mode');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
