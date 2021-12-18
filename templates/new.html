@@ -70,6 +70,9 @@
       color: #3d8c40 !important;
       background-color: #202123;
     }
+    datalist {
+      display: none;
+    }
 </style>
 
   <title>JadwalShalat</title>
@@ -90,23 +93,16 @@
                   <form class="col s12">
                     <div class="row">
                       <div class="input-field col s12 m6 l6">
-                        <select id="province">
-                          {% for o in province %}
-                          <option value="{{ o }}">{{ o }}</option>
-                          {% endfor %}
-                        </select>
-                        <label>PROVINSI</label>
-                      </div>
-                      <div class="input-field col s12 m6 l6">
-                        <select id="kabko">
+                        <input type="text" list="kabko" name="kabko" required>
+                        <datalist id="kabko">
                           {% for o in kabko %}
                           <option value="{{ o }}">{{ o }}</option>
                           {% endfor %}
-                        </select>
-                        <label>KABUPATEN/KOTA</label>
+                        </datalist>
+                        <label>Kabupaten/Kota</label>
                       </div>
                       <div class="input-field col s12 m6 l6">
-                        <select id="search_bln" class="form-input" name="search_bln">
+                        <select id="bln" class="form-input" name="bln">
                           {% for o in bulan %}
                           <option value="{{ o }}">{{ o }}</option>
                           {% endfor %}
@@ -115,7 +111,7 @@
                         <label>BULAN</label>
                       </div>
                       <div class="input-field col s12 m6 l6">
-                        <select id="search_thn" class="form-input" name="search_thn">
+                        <select id="thn" class="form-input" name="thn">
                           {% for o in tahun %}
                           <option value="{{ o }}">{{ o }}</option>
                           {% endfor %}
@@ -158,37 +154,23 @@
     $(document).ready(function () {
       $(".collapsible").collapsible();
       $("select").formSelect();
-      $("#province").change(function () {
-        $.getJSON("/_update_dropdown", {
-          selprov: $("#province").val()
-        }).success(function (data) {
-          $("#kabko").html(data.html_string_selected);
-          $("select").formSelect();
-        });
+      $(document).on('change', 'input', function () {
+        if ($('datalist').find('option[value="' + this.value + '"]')) {loadjadwal(this.value);}
       });
-      $("#btn_search").bind("click", function () {
-        if ($("#kabko").val() == "Pilih Kabupaten") {
-          alert("Silahkan pilih provinsi terlebih dahulu");
-          return false;
-        }
+      $("#btn_search").bind("click", function () {loadjadwal();});
+      function loadjadwal (kabup) {
         $('.progress').show();
         $(".collapsible").collapsible("close", 0);
-        $.get(
-          "/_process_data/" +
-          $("#province").val() +
-          "/" + $("#kabko").val() +
-          "/" + $("#search_thn").val() +
-          "/" + $("#search_bln").val()
+        console
+        $.get("/_process_data/" + kabup + "/" + $("#thn").val() + "/" + $("#bln").val()
         ).success(function (shalat) {
           $("#rowshalat").html("");
           if (shalat != 'null') {
-            $("#rowshalat").append(
-              shalat
-            );
+            $("#rowshalat").append(shalat);
             $('.progress').hide();
           }
         });
-      });
+      }
       $('.dark-toggle').on('click', function () {
         if ($(this).find('i').text() == 'dark_mode') {
           $(this).find('i').text('light_mode');
