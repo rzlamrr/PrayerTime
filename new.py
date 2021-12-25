@@ -1,15 +1,14 @@
 import glob
 import json
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 
 import requests
-from dateutil.relativedelta import relativedelta
-from flask import (Flask, Response, abort, render_template, request)
+from flask import Flask, Response, abort, render_template, request
 
 app = Flask(__name__)
 
-host = 'http://192.168.1.117:5000/'if os.name == 'nt' else 'https://jadwalshalat.glitch.me/'
+host = ['http://192.168.1.117:5000/'] if os.name == 'nt' else ['https://jadwalshalat.glitch.me/', 'https://jdwlshalat.herokuapp.com/']
 
 
 def get_kabid(kabko=None):
@@ -33,7 +32,7 @@ def forbidden(e):
 
 @app.route('/_process_data/<kab>/<thn>/<bln>/<tgl>')
 def process_data(kab, thn, bln, tgl):
-    if request.referrer != host:
+    if request.referrer not in host:
         abort(403)
     html = ''
     kabid = get_kabid(kab)
