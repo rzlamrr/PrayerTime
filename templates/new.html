@@ -1,18 +1,15 @@
 <!DOCTYPE html>
-<html lang="in">
+<html lang="id">
 
 <head>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" />
-
   <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png')}}" />
   <link rel="icon" href="{{ url_for('static', filename='favicon.ico')}}" />
   <link rel="manifest" href="{{ url_for('static', filename='site.webmanifest')}}" />
-
   <meta charset="utf-8" />
-  <!--    keywords-->
   <meta name="keywords" content="jadwal shalat, prayer times, kemenag" />
-  <!--    description-->
   <meta name="description" content="Jadwal Shalat for Indonesian, scrapped from Kemenag RI" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
@@ -21,125 +18,113 @@
       display: flex;
       min-height: 100vh;
       flex-direction: column;
+      font-family: 'Quicksand', sans-serif;
     }
 
     main {
       flex: 1 0 auto;
     }
 
-    a {
+    .footer-fixed a {
       color: #ffca28;
     }
-
-    span {
-      color: #368039 !important;
+    .footer-fixed {
+      color: whitesmoke;
     }
-
     input {
       color: black;
     }
 
     .footer-fixed footer {
-	    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
     }
+
     .footer-fixed {
-	    position: fixed;
-	    bottom: 0;
-	    width: 100%;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
     }
 
     body.dark {
-      background-color: #121212;
+      background-color: #16202a;
       color: whitesmoke;
     }
+
     body.dark .card {
-      background-color: #202123;
+      background-color: #203040;
     }
+
     body.dark .rowshalat {
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
+
     body.dark .rowshalat .jadwalshalat {
-      background-color: #202123;
+      background-color: #203040;
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     }
+
     body.dark input {
       color: whitesmoke;
       background-color: #364237;
     }
-    body.dark span {
-      color: #3d8c40 !important;
-      background-color: #202123;
-    }
+
     datalist {
       display: none;
     }
-</style>
+  </style>
 
   <title>JadwalShalat</title>
 </head>
 
 <body>
-  <main>
-    <div class="col s12 m12 l7 offset-l1">
-      <ul class="collapsible popout">
-        <li class="active">
-          <div id="search_collaps" class="collapsible-header card-panel green darken-1 center-align valign center-block">
-            <i class="material-icons">access_time</i>JADWAL SHALAT
-          </div>
-          <div class="collapsible-body">
-            <div class="container">
-              <div class="section">
-                <div class="row">
-                  <form class="col s12">
-                    <div class="row">
-                      <div class="input-field col s12 m6 l6">
-                        <input type="text" list="kabko" name="kabko" required>
-                        <datalist id="kabko">
-                          {% for o in kabko %}
-                          <option value="{{ o }}">{{ o }}</option>
-                          {% endfor %}
-                        </datalist>
-                        <label>Kabupaten/Kota</label>
-                      </div>
-                      <div class="input-field col s12 m6 l6">
-                        <select id="bln" class="form-input" name="bln">
-                          {% for o in bulan %}
-                          <option value="{{ o }}">{{ o }}</option>
-                          {% endfor %}
-                          </select>
-                        </select>
-                        <label>BULAN</label>
-                      </div>
-                      <div class="input-field col s12 m6 l6">
-                        <select id="thn" class="form-input" name="thn">
-                          {% for o in tahun %}
-                          <option value="{{ o }}">{{ o }}</option>
-                          {% endfor %}
-                        </select>
-                        <label>TAHUN</label>
-                      </div>
-                    </div>
-                    <div class="center-align">
-                      <a id="btn_search" class="btn-floating waves-effect waves-light pulse green darken-1"><i
-                          class="material-icons">search</i></a>
-                          <a class="btn-floating dark-toggle waves-effect waves-light green darken-1" href="#"
-                            onclick="localStorage.setItem('mode', (localStorage.getItem('mode')) === 'dark' ? 'light' : 'dark');
-                                  localStorage.getItem('mode') === 'dark' ? document.querySelector('body').classList.add('dark') : document.querySelector('body').classList.remove('dark')"
-                            title="Dark/light"><i class="material-icons">dark_mode</i></a>
-                    </div>
-                  </form>
-                </div>
-              </div>
+  <div class="navbar-fixed">
+    <nav class="nav-extended">
+      <div class="nav-wrapper green darken-1">
+        <a href="/" class="brand-logo">Jadwal Shalat</a>
+        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><a href="/">Home</a></li>
+          <li><a href="/">About</a></li>
+          <!--
+            <li><a class="waves-effect waves-light btn">Button <i class="material-icons right">cloud</i></a></li>
+            <li><a class="waves-effect waves-light btn-large">Large Button</a></li>
+          -->
+        </ul>
+      </div>
+    </nav>
+  </div>
+  <div class="col s12 m12 l7 offset-l1">
+    <div class="container">
+      <div class="section">
+        <div class="row">
+          <form class="col s12">
+            <div class="input-field col s12 m6 l6">
+              <input type="text" list="kabko" name="kabko" placeholder="Kabupaten/Kota" required autofocus>
+              <datalist id="kabko">
+                {% for o in kabko %}
+                <option value="{{ o }}">{{ o }}</option>
+                {% endfor %}
+              </datalist>
             </div>
-          </div>
-          <div class="progress" style="display: none">
-            <div class="indeterminate"></div>
-          </div>
-        </li>
-      </ul>
-        <div id="rowshalat" class="row"></div>
+            <div class="input-field col s12 m6 l6">
+              <input type=text name="bdate" id="bdate" class="datepicker" required>
+              <label for="bdate">Waktu</label>
+            </div>
+            <!--<div class="center-align">
+              <a class="btn-floating dark-toggle waves-effect waves-light green darken-1" href="#"
+                onclick="localStorage.setItem('mode', (localStorage.getItem('mode')) === 'dark' ? 'light' : 'dark');
+                                  localStorage.getItem('mode') === 'dark' ? document.querySelector('body').classList.add('dark') : document.querySelector('body').classList.remove('dark')"
+                title="Dark/light"><i class="material-icons">dark_mode</i></a>
+            </div>-->
+          </form>
+        </div>
+      </div>
     </div>
-  </main>
+    <div class="progress" style="display: none">
+      <div class="indeterminate"></div>
+    </div>
+    <div id="rowshalat" class="row"></div>
+  </div>
   <footer class="footer-fixed green darken-1">
     <p class="center-align">
       Made by
@@ -149,35 +134,40 @@
   </footer>
 
   <script src="https://code.jquery.com/jquery-1.12.4.js" type="text/javascript"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"
+    type="text/javascript"></script>
   <script type="text/javascript">
     $(document).ready(function () {
-      $(".collapsible").collapsible();
-      $("select").formSelect();
-      $(document).on('change', 'input', function () {
-        if ($('datalist').find('option[value="' + this.value + '"]')) {loadjadwal(this.value);}
+      $(".collapsible").collapsible(); $("select").formSelect();
+      const date = new Date(); const curYear = date.getFullYear();
+      $(".datepicker").datepicker({
+        selectMonths: true,
+        defaultDate: new Date(curYear, date.getMonth(), date.getDate()),
+        setDefaultDate: true,
+        maxDate: new Date(curYear + 2, 11, 31),
+        yearRange: [curYear - 2, curYear + 2],
+        format: "dd mmmm yyyy",
+        autoClose: true
       });
-      $("#btn_search").bind("click", function () {loadjadwal();});
-      function loadjadwal (kabup) {
-        $('.progress').show();
-        $(".collapsible").collapsible("close", 0);
-        console
-        $.get("/_process_data/" + kabup + "/" + $("#thn").val() + "/" + $("#bln").val()
-        ).success(function (shalat) {
-          $("#rowshalat").html("");
-          if (shalat != 'null') {
-            $("#rowshalat").append(shalat);
-            $('.progress').hide();
-          }
-        });
-      }
-      $('.dark-toggle').on('click', function () {
-        if ($(this).find('i').text() == 'dark_mode') {
-          $(this).find('i').text('light_mode');
-        } else {
-          $(this).find('i').text('dark_mode');
+      $("input[name='kabko']").on('change', function (e) {
+        var $input = $(this),
+        val = $input.val();
+        list = $input.attr('list'),
+        match = $('#' + list + ' option').filter(function () {
+            return ($(this).val() === val);
+          });
+        if (match.length > 0) {
+          $('.progress').show()
+          document.activeElement.blur();
+          $("input[name='kabko']").blur();
+          $.get("/_process_data/" + this.value + "/" + $('.datepicker').val().split(" ")[2] + "/" + $('.datepicker').val().split(" ")[1] + "/" + $('.datepicker').val().split(" ")[0]
+          ).success(function (shalat) {
+            $("#rowshalat").html("");
+            if (shalat != 'null') { $("#rowshalat").append(shalat); $('.progress').hide(); document.getElementById('currentjdwl').scrollIntoView({behavior: "smooth", block: "center"}); }
+          });
         }
       });
+      $('.dark-toggle').on('click', function () { if ($(this).find('i').text() == 'dark_mode') { $(this).find('i').text('light_mode'); } else { $(this).find('i').text('dark_mode'); } });
     });
   </script>
 </body>
