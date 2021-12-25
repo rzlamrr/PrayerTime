@@ -25,12 +25,6 @@
       flex: 1 0 auto;
     }
 
-    .footer-fixed a {
-      color: #ffca28;
-    }
-    .footer-fixed {
-      color: whitesmoke;
-    }
     input {
       color: black;
     }
@@ -40,32 +34,14 @@
     }
 
     .footer-fixed {
+      color: whitesmoke;
       position: fixed;
       bottom: 0;
       width: 100%;
     }
 
-    body.dark {
-      background-color: #16202a;
-      color: whitesmoke;
-    }
-
-    body.dark .card {
-      background-color: #203040;
-    }
-
-    body.dark .rowshalat {
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    body.dark .rowshalat .jadwalshalat {
-      background-color: #203040;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    body.dark input {
-      color: whitesmoke;
-      background-color: #364237;
+    .footer-fixed a {
+      color: #ffca28;
     }
 
     datalist {
@@ -85,10 +61,6 @@
         <ul id="nav-mobile" class="right hide-on-med-and-down">
           <li><a href="/">Home</a></li>
           <li><a href="/">About</a></li>
-          <!--
-            <li><a class="waves-effect waves-light btn">Button <i class="material-icons right">cloud</i></a></li>
-            <li><a class="waves-effect waves-light btn-large">Large Button</a></li>
-          -->
         </ul>
       </div>
     </nav>
@@ -107,15 +79,9 @@
               </datalist>
             </div>
             <div class="input-field col s12 m6 l6">
-              <input type=text name="bdate" id="bdate" class="datepicker" required>
-              <label for="bdate">Waktu</label>
+              <input type=text name="tanggal" id="tanggal" class="datepicker" required>
+              <label for="tanggal">Waktu</label>
             </div>
-            <!--<div class="center-align">
-              <a class="btn-floating dark-toggle waves-effect waves-light green darken-1" href="#"
-                onclick="localStorage.setItem('mode', (localStorage.getItem('mode')) === 'dark' ? 'light' : 'dark');
-                                  localStorage.getItem('mode') === 'dark' ? document.querySelector('body').classList.add('dark') : document.querySelector('body').classList.remove('dark')"
-                title="Dark/light"><i class="material-icons">dark_mode</i></a>
-            </div>-->
           </form>
         </div>
       </div>
@@ -147,26 +113,24 @@
         maxDate: new Date(curYear + 2, 11, 31),
         yearRange: [curYear - 2, curYear + 2],
         format: "dd mmmm yyyy",
-        autoClose: true
-      });
-      $("input[name='kabko']").on('change', function (e) {
-        var $input = $(this),
-        val = $input.val();
-        list = $input.attr('list'),
-        match = $('#' + list + ' option').filter(function () {
-            return ($(this).val() === val);
-          });
-        if (match.length > 0) {
-          $('.progress').show()
-          document.activeElement.blur();
-          $("input[name='kabko']").blur();
-          $.get("/_process_data/" + this.value + "/" + $('.datepicker').val().split(" ")[2] + "/" + $('.datepicker').val().split(" ")[1] + "/" + $('.datepicker').val().split(" ")[0]
-          ).success(function (shalat) {
-            $("#rowshalat").html("");
-            if (shalat != 'null') { $("#rowshalat").append(shalat); $('.progress').hide(); document.getElementById('currentjdwl').scrollIntoView({behavior: "smooth", block: "center"}); }
-          });
+        autoClose: true,
+        onSelect: function (d, i) {
+          $(this).change();
         }
       });
+      $(".datepicker").on("change", function () {
+        if ($("input[name=kabko]").val() == '') {M.toast({html: "Kabupaten/Kota harus diisi", classes: "red"});return false;}
+        $('.progress').show();
+        $.get("/_process_data/" + $("input[name=kabko]").val() + "/" + this.value.split(" ")[2] + "/" + this.value.split(" ")[1] + "/" + this.value.split(" ")[0]
+        ).success(function (shalat) {$("#rowshalat").html("");if (shalat != 'null') { $("#rowshalat").append(shalat); $('.progress').hide(); document.getElementById('currentjdwl').scrollIntoView({behavior: "smooth", block: "center"}); }});
+      });
+      $("input[name='kabko']").on('change', function (e) {
+        var $input = $(this);val = $input.val();list = $input.attr('list');
+        match = $('#' + list + ' option').filter(function () {return ($(this).val() === val);});
+        if (match.length > 0) {
+          $('.progress').show();document.activeElement.blur();$("input[name='kabko']").blur();
+          $.get("/_process_data/" + this.value + "/" + $('.datepicker').val().split(" ")[2] + "/" + $('.datepicker').val().split(" ")[1] + "/" + $('.datepicker').val().split(" ")[0]
+          ).success(function (shalat) {$("#rowshalat").html("");if (shalat != 'null') { $("#rowshalat").append(shalat); $('.progress').hide(); document.getElementById('currentjdwl').scrollIntoView({behavior: "smooth", block: "center"}); }});}});
       $('.dark-toggle').on('click', function () { if ($(this).find('i').text() == 'dark_mode') { $(this).find('i').text('light_mode'); } else { $(this).find('i').text('dark_mode'); } });
     });
   </script>
