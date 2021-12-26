@@ -43,8 +43,6 @@
     .footer-fixed a {
       color: #ffca28;
     }
-
-
   </style>
 
   <title>JadwalShalat</title>
@@ -102,27 +100,30 @@
     type="text/javascript"></script>
   <script type="text/javascript">
     $(document).ready(function () {
-      $(".collapsible").collapsible(); $("select").formSelect();const date = new Date(); const curYear = date.getFullYear();
+      $(".collapsible").collapsible(); $("select").formSelect(); const date = new Date(); const curYear = date.getFullYear();
       $(".datepicker").datepicker({
-        selectMonths: true,defaultDate: new Date(curYear, date.getMonth(), date.getDate()),
-        setDefaultDate: true,maxDate: new Date(curYear + 2, 11, 31),yearRange: [curYear - 2, curYear + 2],
-        format: "dd mmmm yyyy",autoClose: true,onSelect: function (d, i) {$(this).change();}
+        selectMonths: true, defaultDate: new Date(curYear, date.getMonth(), date.getDate()),
+        setDefaultDate: true, maxDate: new Date(curYear + 2, 11, 31), yearRange: [curYear - 2, curYear + 2],
+        format: "dd mmmm yyyy", autoClose: true, onSelect: function (d, i) { $(this).change(); }
       });
       if (localStorage.getItem("lokasi") != null) {
-        $("input[name='kabko']").val(localStorage.getItem("lokasi"));$('.progress').show();document.activeElement.blur();$("input[name='kabko']").blur();
+        $("input[name='kabko']").val(localStorage.getItem("lokasi")); $('.progress').show(); document.activeElement.blur(); $("input[name='kabko']").blur();
         $.get("/_process_data/" + localStorage.getItem("lokasi") + "/" + $('.datepicker').val().split(" ")[2] + "/" + $('.datepicker').val().split(" ")[1] + "/" + $('.datepicker').val().split(" ")[0]
-        ).success(function (shalat) {$("#rowshalat").html("");if (shalat != 'null') { $("#rowshalat").append(shalat); $('.progress').hide(); document.getElementById('currentjdwl').scrollIntoView({behavior: "smooth", block: "center"}); }});}
+        ).success(function (shalat) { $("#rowshalat").html(""); if (shalat != 'null') { $("#rowshalat").append(shalat); $('.progress').hide(); document.getElementById('currentjdwl').scrollIntoView({ behavior: "smooth", block: "center" }); } });
+      }
       $(".datepicker").on("input", function () {
-        if ($("input[name=kabko]").val() == '') {M.toast({html: "Kabupaten/Kota harus diisi", classes: "red"});return false;}
-        $('.progress').show();$.get("/_process_data/" + $("input[name=kabko]").val() + "/" + this.value.split(" ")[2] + "/" + this.value.split(" ")[1] + "/" + this.value.split(" ")[0]
-        ).success(function (shalat) {$("#rowshalat").html("");if (shalat != 'null') { $("#rowshalat").append(shalat); $('.progress').hide(); document.getElementById('currentjdwl').scrollIntoView({behavior: "smooth", block: "center"}); }});
+        if ($("input[name=kabko]").val() == '') { M.toast({ html: "Kabupaten/Kota harus diisi", classes: "red" }); return false; }
+        $('.progress').show(); $.get("/_process_data/" + $("input[name=kabko]").val() + "/" + this.value.split(" ")[2] + "/" + this.value.split(" ")[1] + "/" + this.value.split(" ")[0]
+        ).success(function (shalat) { $("#rowshalat").html(""); if (shalat != 'null') { $("#rowshalat").append(shalat); $('.progress').hide(); document.getElementById('currentjdwl').scrollIntoView({ behavior: "smooth", block: "center" }); } });
       });
       $("input[name='kabko']").on('change', function (e) {
-        var $input = $(this);val = $input.val();list = $input.attr('list');match = $('#' + list + ' option').filter(function () {return ($(this).val() === val);});
+        var $input = $(this); val = $input.val(); list = $input.attr('list'); match = $('#' + list + ' option').filter(function () { return ($(this).val() === val); });
         if (match.length > 0) {
-          $('.progress').show();document.activeElement.blur();$("input[name='kabko']").blur();
+          $('.progress').show(); document.activeElement.blur(); $("input[name='kabko']").blur();
           $.get("/_process_data/" + this.value + "/" + $('.datepicker').val().split(" ")[2] + "/" + $('.datepicker').val().split(" ")[1] + "/" + $('.datepicker').val().split(" ")[0]
-          ).success(function (shalat) {$("#rowshalat").html("");if (shalat != 'null') { $("#rowshalat").append(shalat); $('.progress').hide(); document.getElementById('currentjdwl').scrollIntoView({behavior: "smooth", block: "center"}); }}); localStorage.setItem("lokasi", this.value);}});
+          ).success(function (shalat) { $("#rowshalat").html(""); if (shalat != 'null') { $("#rowshalat").append(shalat); $('.progress').hide(); document.getElementById('currentjdwl').scrollIntoView({ behavior: "smooth", block: "center" }); } }); localStorage.setItem("lokasi", this.value);
+        }
+      });
     });
   </script>
 </body>
