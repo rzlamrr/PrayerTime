@@ -1,1 +1,1 @@
-python3 new.py
+python3 index.py

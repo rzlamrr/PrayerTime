@@ -8,7 +8,7 @@ from flask import Flask, Response, abort, render_template, request
 
 app = Flask(__name__)
 
-host = ['http://192.168.1.117:5000/'] if os.name == 'nt' else ['https://jadwalshalat.glitch.me/', 'https://jdwlshalat.herokuapp.com/']
+host = ['http://192.168.1.117:5000/'] if os.name == 'nt' else ['https://jadwalshalat.glitch.me/', 'https://jdwlshalat.herokuapp.com/', 'https://jadwalshalat.vercel.app/']
 
 
 def get_kabid(kabko=None):
@@ -72,7 +72,7 @@ def process_data(kab, thn, bln, tgl):
 
 @app.route('/')
 def index():
-    return render_template('new.html',
+    return render_template('index.html',
                            kabko=get_kabid())
 
 
